@@ -1515,7 +1515,8 @@ If you offer a hardware kit using this software, show your appreciation by sendi
 #endif 
 
 #if defined(FEATURE_PS2_KEYBOARD)
-  #include <K3NG_PS2Keyboard.h>
+ // #include <K3NG_PS2Keyboard.h>
+  #include <PS2Keyboard_stm32.h>
 #endif
 
 #if defined(FEATURE_LCD_4BIT) || defined(FEATURE_LCD1602_N07DH) || defined (FEATURE_LCD_8BIT) // works on 3.2V supply and logic, but do not work on every pins (SP5IOU)
@@ -1938,7 +1939,8 @@ byte send_buffer_status = SERIAL_SEND_BUFFER_NORMAL;
   #ifdef OPTION_USE_ORIGINAL_VERSION_2_1_PS2KEYBOARD_LIB
     PS2Keyboard keyboard;
   #else //OPTION_USE_ORIGINAL_VERSION_2_1_PS2KEYBOARD_LIB
-    K3NG_PS2Keyboard keyboard;
+    //K3NG_PS2Keyboard keyboard;
+    PS2Keyboard keyboard;
   #endif //OPTION_USE_ORIGINAL_VERSION_2_1_PS2KEYBOARD_LIB
 #endif
 
@@ -3789,6 +3791,7 @@ void check_ps2_keyboard()
           case PS2_F2_ALT : if (number_of_memories > 1) {repeat_memory_msg(1);} break;
           case PS2_F3_ALT : if (number_of_memories > 2) {repeat_memory_msg(2);} break;
           #ifndef OPTION_SAVE_MEMORY_NANOKEYER
+          #ifndef OPTION_PS2_KEYBOARD_JAPANESE
             case PS2_F4_ALT : if (number_of_memories > 3) {repeat_memory_msg(3);} break;
             case PS2_F5_ALT : if (number_of_memories > 4) {repeat_memory_msg(4);} break;
             case PS2_F6_ALT : if (number_of_memories > 5) {repeat_memory_msg(5);} break;
@@ -3799,7 +3802,10 @@ void check_ps2_keyboard()
             case PS2_F11_ALT : if (number_of_memories > 10) {repeat_memory_msg(10);} break;
             case PS2_F12_ALT : if (number_of_memories > 11) {repeat_memory_msg(11);} break;
           #endif //OPTION_SAVE_MEMORY_NANOKEYER
+          #endif // OPTION_PS2_KEYBOARD_JAPANESE
+          
         #endif //FEATURE_MEMORIES
+
 
         case PS2_DELETE : if (send_buffer_bytes) { send_buffer_bytes--; } break;
         case PS2_ESC :  // clear the serial send buffer and a bunch of other stuff
@@ -4194,6 +4200,7 @@ void check_ps2_keyboard()
             #endif                      
           }
           break;
+          
         #ifndef OPTION_SAVE_MEMORY_NANOKEYER
         case PS2_F3_CTRL :
           if ((ptt_tx_3)  || (tx_key_line_3)) {
@@ -4203,7 +4210,7 @@ void check_ps2_keyboard()
             #endif                                  
           }
           break;
-
+        #ifndef OPTION_PS2_KEYBOARD_JAPANESE
         case PS2_F4_CTRL :
           if ((ptt_tx_4)  || (tx_key_line_4)) {
             switch_to_tx_silent(4);   
@@ -4230,8 +4237,9 @@ void check_ps2_keyboard()
             #endif                                  
           }
           break;
-        #endif //OPTION_SAVE_MEMORY_NANOKEYER
-
+        #endif // OPTION_SAVE_MEMORY_NANOKEYER 
+        #endif // OPTION_PS2_KEYBOARD_JAPANESE
+        
         #ifdef FEATURE_AUTOSPACE
         case PS2_Z_CTRL:
           if (configuration.autospace_active) {
@@ -4469,6 +4477,7 @@ void check_ps2_keyboard()
           break;
 
         case PS2_A_CTRL :
+          
           configuration.keyer_mode = IAMBIC_A;
           #ifdef FEATURE_DISPLAY
             lcd_center_print_timed("Iambic A", 0, default_display_msg_delay);
@@ -9434,6 +9443,66 @@ void send_char(byte cw_char, byte omit_letterspace)
       case 238: send_the_dits_and_dahs("--.--");break;// 'ñ' LA3ZA
       case 226: send_the_dits_and_dahs("------");break;// 'ß' LA3ZA
       #endif //OPTION_NON_ENGLISH_EXTENSIONS   
+
+      
+      #if defined(OPTION_WABUN_CODE)
+      case 177  : send_the_dits_and_dahs("--.--"); break;   // ｱ
+      case 178  : send_the_dits_and_dahs(".-"); break;
+      case 179  : send_the_dits_and_dahs("..-"); break;
+      case 180  : send_the_dits_and_dahs("-.---"); break;
+      case 181  : send_the_dits_and_dahs(".-..."); break;
+      case 182  : send_the_dits_and_dahs(".-.."); break;
+      case 183  : send_the_dits_and_dahs("-.-.."); break;
+      case 184  : send_the_dits_and_dahs("...-"); break;
+      case 185  : send_the_dits_and_dahs("-.--"); break;
+      case 186  : send_the_dits_and_dahs("----"); break;
+      case 187  : send_the_dits_and_dahs("-.-.-"); break;
+      case 188  : send_the_dits_and_dahs("--.-."); break;
+      case 189  : send_the_dits_and_dahs("---.-"); break;
+      case 190  : send_the_dits_and_dahs(".---."); break;
+      case 191  : send_the_dits_and_dahs("---."); break;
+      case 192  : send_the_dits_and_dahs("-."); break;
+      case 193  : send_the_dits_and_dahs("..-."); break;
+      case 194  : send_the_dits_and_dahs(".--."); break;
+      case 195  : send_the_dits_and_dahs(".-.--"); break;
+      case 196  : send_the_dits_and_dahs("..-.."); break;
+      case 197  : send_the_dits_and_dahs(".-."); break;
+      case 198  : send_the_dits_and_dahs("-.-."); break;
+      case 199  : send_the_dits_and_dahs("...."); break;
+      case 200  : send_the_dits_and_dahs("--.-"); break;
+      case 201  : send_the_dits_and_dahs("..--"); break;
+      case 202  : send_the_dits_and_dahs("-..."); break;
+      case 203  : send_the_dits_and_dahs("--..-"); break;
+      case 204  : send_the_dits_and_dahs("--.."); break;
+      case 205  : send_the_dits_and_dahs("."); break;
+      case 206  : send_the_dits_and_dahs("-.."); break;
+      case 207  : send_the_dits_and_dahs("-..-"); break;
+      case 208  : send_the_dits_and_dahs("..-.-"); break;
+      case 209  : send_the_dits_and_dahs("-"); break;
+      case 210  : send_the_dits_and_dahs("-...-"); break;
+      case 211  : send_the_dits_and_dahs("-..-."); break;
+      case 212  : send_the_dits_and_dahs(".--"); break;
+      case 213  : send_the_dits_and_dahs("-..--"); break;
+      case 214  : send_the_dits_and_dahs("--"); break;
+      case 215  : send_the_dits_and_dahs("..."); break;
+      case 216  : send_the_dits_and_dahs("--."); break;
+      case 217  : send_the_dits_and_dahs("-.--."); break;
+      case 218  : send_the_dits_and_dahs("---"); break;
+      case 219  : send_the_dits_and_dahs(".-.-"); break;
+      case 220  : send_the_dits_and_dahs("-.-"); break;     // ﾜ
+      case 166  : send_the_dits_and_dahs(".---"); break;    // ｦ
+      case 221  : send_the_dits_and_dahs(".-.-."); break;   // ﾝ
+      case 222  : send_the_dits_and_dahs(".."); break;      // ﾞ
+      case 223  : send_the_dits_and_dahs("..--."); break;   // ﾟ
+      case 176  : send_the_dits_and_dahs(".--.-"); break;   // -
+      case 164  : send_the_dits_and_dahs(".-.-.-"); break;  // ､
+      case 161  : send_the_dits_and_dahs(".-.-.."); break;  // ｡
+      case 162  : send_the_dits_and_dahs("-..---"); break;  // Start wabun mode "DO(ﾎﾚ)" ｢ 
+      case 163  : send_the_dits_and_dahs("...-."); break;   // Stop wabun mode "SN(ﾗﾀ)" ｣
+      case 91   : send_the_dits_and_dahs("-.--.-"); break;  // Start english in wabun_mode "KK" [
+      case 93   : send_the_dits_and_dahs(".-..-."); break;  // Stop english in wabun_mode "RR" ]
+      #endif
+
       
       case '|': 
         #if !defined(OPTION_WINKEY_DO_NOT_SEND_7C_BYTE_HALF_SPACE)
@@ -15736,6 +15805,15 @@ int convert_cw_number_to_ascii (long number_in)
 
   // number_in:  1 = dit, 2 = dah, 9 = a space
 
+  #ifdef OPTION_WABUN_CODE    // Japanese text in morse code
+  static bool mode_wabun = false;
+  static bool tmp_eng = false;
+  if (mode_wabun && !tmp_eng){
+      int jis_code = convert_cw_number_to_jis(number_in);
+      if (jis_code != 0) return jis_code;
+  }
+  #endif
+    
   switch (number_in) {
     case 12: return 65; break;         // A
     case 2111: return 66; break;
@@ -15788,6 +15866,13 @@ int convert_cw_number_to_ascii (long number_in)
     case 211112: return '-'; break;
     //case 2222222: return '+'; break;
     case 9: return 32; break;       // special 9 = space
+    
+    #ifdef OPTION_WABUN_CODE
+      case 211222: mode_wabun = true;  return 162; break;    // Start wabun mode "DO(ﾎﾚ)" ｢ 
+      case 11121:  mode_wabun = false; return 163; break;    // Stop wabun mode "SN(ﾗﾀ)" ｣
+      case 212212: tmp_eng = true; return 91; break;         // Start english in wabun_mode "KK" [
+      case 121121: tmp_eng = false; return 93; break;        // Stop english in wabun_mode "RR" ]
+    #endif
 
     #ifndef OPTION_PS2_NON_ENGLISH_CHAR_LCD_DISPLAY_SUPPORT
       case 12121: return '+'; break;
@@ -15798,12 +15883,14 @@ int convert_cw_number_to_ascii (long number_in)
       #if !defined(OPTION_PROSIGN_SUPPORT)
         case 12111: return 38; break; // & // sp5iou
       #endif  
+      #ifndef OPTION_WABUN_CODE
+        case 121121: return 34; break; // " // sp5iou // Same as stop english in wabun_mode "RR" ]
+        case 212212: return 41; break; // KK (stored as ascii ) ) // sp5iou   // Same as start english in wabun_mode "KK" [
+      #endif
       case 122221: return 39; break; // ' // sp5iou
-      case 121121: return 34; break; // " // sp5iou
       case 112212: return 95; break; // _ // sp5iou
       case 212121: return 59; break; // ; // sp5iou
       case 222111: return 58; break; // : // sp5iou
-      case 212212: return 41; break; // KK (stored as ascii ) ) // sp5iou
       #if !defined(OPTION_PROSIGN_SUPPORT)
         case 111212: return 62; break; // SK (stored as ascii > ) // sp5iou
       #endif
@@ -15815,14 +15902,16 @@ int convert_cw_number_to_ascii (long number_in)
       #if !defined(OPTION_NON_ENGLISH_EXTENSIONS)
         case 1212:   return PROSIGN_AA; break;
       #endif
+      #ifndef OPTION_WABUN_CODE
+        case 211222:   return PROSIGN_NJ; break;  // Same as start wabun  ｢ ﾎﾚ
+        case 11121:    return PROSIGN_SN; break;  // Same as stop wabun  ｣ ﾗﾀ
+      #endif
       case 12111:    return PROSIGN_AS; break;
       case 2111212:  return PROSIGN_BK; break;
       case 21211211: return PROSIGN_CL; break;
       case 21212:    return PROSIGN_CT; break;
       case 21221:    return PROSIGN_KN; break;
-      case 211222:   return PROSIGN_NJ; break;
       case 111212:   return PROSIGN_SK; break;
-      case 11121:    return PROSIGN_SN; break;
       case 11111111: return PROSIGN_HH; break;  // iz0rus
     #else //OPTION_PROSIGN_SUPPORT
       case 21221: return 40; break; // (KN store as ascii ( ) //sp5iou //aaaaaaa
@@ -15859,6 +15948,67 @@ int convert_cw_number_to_ascii (long number_in)
   }
 
 }
+
+#ifdef OPTION_WABUN_CODE
+int convert_cw_number_to_jis(long number_in){
+  switch(number_in){
+    case 22122: return 177; break;  // ｱ
+    case 12: return 178; break;
+    case 112: return 179; break;
+    case 21222: return 180; break;
+    case 12111: return 181; break;
+    case 1211: return 182; break;
+    case 21211: return 183; break;
+    case 1112: return 184; break;
+    case 2122: return 185; break;
+    case 2222: return 186; break;
+    case 21212: return 187; break;
+    case 22121: return 188; break;
+    case 22212: return 189; break;
+    case 12221: return 190; break;
+    case 2221: return 191; break;
+    case 21: return 192; break;
+    case 1121: return 193; break;
+    case 1221: return 194; break;
+    case 12122: return 195; break;
+    case 11211: return 196; break;
+    case 121: return 197; break;
+    case 2121: return 198; break;
+    case 1111: return 199; break;
+    case 2212: return 200; break;
+    case 1122: return 201; break;
+    case 2111: return 202; break;
+    case 22112: return 203; break;
+    case 2211: return 204; break;
+    case 1: return 205; break;
+    case 211: return 206; break;
+    case 2112: return 207; break;
+    case 11212: return 208; break;
+    case 2: return 209; break;
+    case 21112: return 210; break;
+    case 21121: return 211; break;
+    case 122: return 212; break;
+    case 21122: return 213; break;
+    case 22: return 214; break;
+    case 111: return 215; break;
+    case 221: return 216; break;
+    case 21221: return 217; break;
+    case 222: return 218; break;
+    case 1212: return 219; break;
+    case 212: return 220; break;    // ﾜ
+    case 1222: return 166; break;   // ｦ
+    case 12121: return 221; break;  // ﾝ
+    case 11: return 222; break;     // ﾞ
+    case 11221: return 223; break;  // ﾟ
+    case 12212: return 176; break;  // -
+    case 121212: return 164; break; // ､
+    case 121211: return 161; break; // ｡
+    case 12112 : return 178; break; // ヰ→ｲ
+    case 12211 : return 180; break; // ヱ→ｴ
+    default : return 0 ;break;
+  }
+}
+#endif
 
 //---------------------------------------------------------------------
 #ifdef DEBUG_MEMORYCHECK
