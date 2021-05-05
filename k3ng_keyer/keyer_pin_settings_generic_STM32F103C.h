@@ -8,19 +8,19 @@ GENERIC STM32F103C Blue Pill board
 #ifndef keyer_pin_settings_h
 #define keyer_pin_settings_h
 
-#define paddle_left PA1
-#define paddle_right PA0
-#define tx_key_line_1 PC15       // (high = key down/tx on)
-#define tx_key_line_2 0
-#define tx_key_line_3 0
+#define paddle_left PB11
+#define paddle_right PB10
+#define tx_key_line_1 PA7       // (high = key down/tx on)
+#define tx_key_line_2 PA6
+#define tx_key_line_3 PA5
 #define tx_key_line_4 0
 #define tx_key_line_5 0
 #define tx_key_line_6 0
-#define sidetone_line PB9         // connect a speaker for sidetone
+#define sidetone_line PB1         // connect a speaker for sidetone
 #define potentiometer 0        // Speed potentiometer (0 to 5 V) Use pot from 1k to 10k
-#define ptt_tx_1 PC14              // PTT ("push to talk") lines
-#define ptt_tx_2 0              //   Can be used for keying fox transmitter, T/R switch, or keying slow boatanchors
-#define ptt_tx_3 0              //   These are optional - set to 0 if unused
+#define ptt_tx_1 PA4              // PTT ("push to talk") lines
+#define ptt_tx_2 PA3              //   Can be used for keying fox transmitter, T/R switch, or keying slow boatanchors
+#define ptt_tx_3 PA2              //   These are optional - set to 0 if unused
 #define ptt_tx_4 0
 #define ptt_tx_5 0
 #define ptt_tx_6 0
@@ -30,8 +30,8 @@ GENERIC STM32F103C Blue Pill board
 #define potentiometer_enable_pin 0  // if defined, the potentiometer will be enabled only when this pin is held low; set to 0 to ignore this pin
 
 #ifdef FEATURE_BUTTONS
-  #define analog_buttons_pin PA3
-  #define command_mode_active_led PC13 //for Generic STM32103C On Board LED
+  #define analog_buttons_pin PA0
+  #define command_mode_active_led PB0 //for Generic STM32103C On Board LED (PC13)
 #endif //FEATURE_BUTTONS
 
 /*
@@ -48,12 +48,12 @@ FEATURE_SIDETONE_SWITCH
 
 //lcd pins
 #ifdef FEATURE_LCD_4BIT
-  #define lcd_rs PB12
-  #define lcd_enable PB13
-  #define lcd_d4 PB14
-  #define lcd_d5 PB15
-  #define lcd_d6 PA8
-  #define lcd_d7 PA9
+  #define lcd_rs PB9
+  #define lcd_enable PB8
+  #define lcd_d4 PB7
+  #define lcd_d5 PB6
+  #define lcd_d6 PB4
+  #define lcd_d7 PB5
 #endif //FEATURE_LCD_4BIT
 
 #if defined(FEATURE_LCD_8BIT) // addition four data lines for 8 bit LCD control
@@ -75,16 +75,16 @@ FEATURE_SIDETONE_SWITCH
 
 //ps2 keyboard pins
 #ifdef FEATURE_PS2_KEYBOARD
-  #define ps2_keyboard_data 0 // for STM boards it can not be Ax - muste use pin numbers only or PBx, PCx etc... sp5iou
-  #define ps2_keyboard_clock 0    // this must be on an interrupt capable pin!
+  #define ps2_keyboard_data PB12 // for STM boards it can not be Ax - muste use pin numbers only or PBx, PCx etc... sp5iou
+  #define ps2_keyboard_clock PB15    // this must be on an interrupt capable pin!
 #endif //FEATURE_PS2_KEYBOARD
 
 // rotary encoder pins and options - rotary encoder code from Jim Balls M0CKE
 #ifdef FEATURE_ROTARY_ENCODER
-  #define OPTION_ENCODER_HALF_STEP_MODE     // Half-step mode?
-  #define rotary_pin1 PB7                      // CW Encoder Pin
-  #define rotary_pin2 PB8                   // CCW Encoder Pin
-  #define OPTION_ENCODER_ENABLE_PULLUPS     // define to enable weak pullups.
+  //#define OPTION_ENCODER_HALF_STEP_MODE     // Half-step mode?
+  #define rotary_pin1 PB13                      // CW Encoder Pin
+  #define rotary_pin2 PB14                   // CCW Encoder Pin
+  //#define OPTION_ENCODER_ENABLE_PULLUPS     // define to enable weak pullups.
 #endif //FEATURE_ROTARY_ENCODER
 
 #ifdef FEATURE_LED_RING
