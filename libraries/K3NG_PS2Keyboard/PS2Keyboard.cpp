@@ -70,7 +70,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "PS2Keyboard_stm32.h"
+#include "PS2Keyboard_JP.h"
 
 #define BUFFER_SIZE 45
 static volatile uint8_t buffer[BUFFER_SIZE];
@@ -155,9 +155,9 @@ static inline uint8_t get_scan_code(void)
 // 日本語キーマップのデータ
 const PROGMEM PS2Keymap_t PS2Keymap_JP = {
   // without shift
-	{0, PS2_F9, 0, PS2_F5, PS2_F3, PS2_F1, PS2_F2, PS2_F12,                 //
-	0, PS2_F10, PS2_F8, PS2_F6, PS2_F4, PS2_TAB, PS2_KANJI /*半角/漢字*/, 0,
-	0, 0 /*Lalt*/, 0 /*Lshift*/, PS2_KANA /*カナ/かな*/, 0 /*Lctrl*/, 'q', '1', 0,
+	{0, PS2_F9, 0, PS2_F5, PS2_F3, PS2_F1, PS2_F2, PS2_F12,
+	0, PS2_F10, PS2_F8, PS2_F6, PS2_F4, PS2_TAB, PS2_KANJI, 0,
+	0, 0 /*Lalt*/, 0 /*Lshift*/, PS2_KANA, 0 /*Lctrl*/, 'q', '1', 0,
 	0, 0, 'z', 's', 'a', 'w', '2', 0,
 	0, 'c', 'x', 'd', 'e', '4', '3', 0,
 	0, ' ', 'v', 'f', 't', 'r', '5', 0,
@@ -167,7 +167,7 @@ const PROGMEM PS2Keymap_t PS2Keymap_JP = {
 	0, '.', '/', 'l', ';', 'p', '-', 0,
 	0, 0x5C, ':', 0, '@', '^', 0, 0,
 	PS2_EISU /*CapsLock*/, 0 /*Rshift*/, PS2_ENTER, '[', 0, ']', 0, 0,
-	0, 0, 0, 0, PS2_HENKAN /*変換*/, 0, PS2_BACKSPACE, PS2_MUHENKAN /*無変換*/,
+	0, 0, 0, 0, PS2_HENKAN, 0, PS2_BACKSPACE, PS2_MUHENKAN,
 	0, '1', 0x5C, '4', '7', 0, 0, 0,
 	'0', '.', '2', '5', '6', '8', PS2_ESC, 0 /*NumLock*/,
 	PS2_F11, '+', '3', '-', '*', '9', PS2_SCROLL, 0,
@@ -480,7 +480,7 @@ static char get_iso8859_code(void)
 					}
 					c = PS2_KANA ; // この行をコメントにすればキーコードは返りません
 				}
-			}*/
+			} */
 		    else if (state & (SHIFT_L | SHIFT_R)) {
 				if (s < PS2_KEYMAP_SIZE)
 					c = pgm_read_byte(keymap->shift + s);
@@ -510,13 +510,28 @@ static char get_iso8859_code(void)
 		    
 	        //for WABUN_CODE
 		    if ( c == PS2_MUHENKAN) {keymap = &PS2Keymap_JP ; kana_f = 0x00;}
+                    if ( c == -93 /*MUHENKAN*/) {keymap = &PS2Keymap_JP ; kana_f = 0x00;}     // JL3OUW
+
 		    if ( c == PS2_HENKAN) {keymap = &PS2Keymap_KANA ; kana_f = 0xff;}
-		    if ( c == 0xAD /*ｭ*/ && kana_f) {keymap = &PS2Keymap_JP ; return '[';}          //和文中に英数字を打ちたいとき
+                    if ( c == -94 /*HENKAN*/) {keymap = &PS2Keymap_KANA ; kana_f = 0xff;}     // JL3OUW
+
+		    if ( c == 0xAD /*ｭ*/ && kana_f) {keymap = &PS2Keymap_JP ; return '[';}    //和文中に英数字を打ちたいとき
+                    if ( c == -83 /*ｭ*/ && kana_f) {keymap = &PS2Keymap_JP ; return '[';}     // JL3OUW
+
 		    if ( c == ')' /*)*/ && kana_f) {keymap = &PS2Keymap_KANA ; return ']';}
-		    if ( c == PS2_EISU && kana_f) {keymap = &PS2Keymap_JP ; return 0;}              //和文中に数字を打ちたいとき
+
+		    if ( c == PS2_EISU && kana_f) {keymap = &PS2Keymap_JP ; return 0;}        //和文中に数字を打ちたいとき
+
 		    if ( c == PS2_KANA && kana_f) {keymap = &PS2Keymap_KANA ; return 0;}
-		    Serial.print("RET:");
-            Serial.println(c, DEC);
+                    if ( c == -96 /*KANA*/ && kana_f) {keymap = &PS2Keymap_KANA ; return 0;}  // JL3OUW
+
+//		    Serial.print("RET:");
+// Serial.print("c: ");
+//            Serial.println(c, DEC);
+// Serial.print("s: ");
+// Serial.println(s, DEC);
+// Serial.print("kana_f: ");
+// Serial.println(kana_f);
 			if (c) return c;
 		}
 	}
@@ -549,8 +564,8 @@ int PS2Keyboard::read() {
 		}
 	    */
 	}
-    Serial.print("result:");
-    Serial.println(result, DEC);
+//    Serial.print("result:");
+//    Serial.println(result, DEC);
 	if (!result) return -1;
 	return result;
 }
@@ -655,4 +670,26 @@ void PS2Keyboard::clrarBuffer() {
   ::incoming = 0;
   ::head = 0;	
 }
+
+// wabun JL3OUW
+PS2Keyboard::SetKanaKeymap() {
+   keymap = &PS2Keymap_KANA;
+   kana_f = 0xff;
+}
+
+
+PS2Keyboard::SetJpKeymap() {
+   keymap = &PS2Keymap_JP;
+   kana_f = 0x00;
+}
+
+PS2Keyboard::SetEngTmpFlagOn() {
+   keymap = &PS2Keymap_JP;
+   kana_f = 0x00;
+} 
+
+PS2Keyboard::SetEngTmpFlagOff() {
+   keymap = &PS2Keymap_KANA;
+   kana_f = 0xff;
+} 
 

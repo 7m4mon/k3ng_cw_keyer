@@ -1632,7 +1632,6 @@ If you offer a hardware kit using this software, show your appreciation by sendi
 #if defined(FEATURE_PS2_KEYBOARD)
 //  #include <K3NG_PS2Keyboard.h>
 //  #include "src/K3NG_PS2Keyboard/PS2Keyboard_JP.h"
-//  #include <PS2Keyboard_stm32.h>
   #include <PS2Keyboard_JP.h>
 #endif
 
